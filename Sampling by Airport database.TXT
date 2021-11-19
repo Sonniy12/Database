@@ -1,0 +1,207 @@
+
+ use Airport;
+
+
+select city_name_departure,city_name_arrival ,
+airport_name_departure,
+ airport_name_arrival ,
+ Date_flight ,
+ Time_flight 
+ 
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where  Exists(select*
+ from Ticket 
+ where Flight.id=Ticket.id_Flight and  Cash>3000 ) ;
+-------------------------------------------------------
+
+//вывести рейсы где билеты больше 5000
+ use Airport;
+
+
+select city_name_departure,city_name_arrival ,
+airport_name_departure,
+ airport_name_arrival ,
+ Date_flight ,
+ Time_flight 
+ 
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where  Ticket.id_Flight= any(select id
+ from Ticket 
+ where   Cash>5000 ) ;
+-------------------------------------------------------
+//вывести города назначения где внешний ключ больше айди из таблицы Тикет, где билет стоит больше 5000
+
+ use Airport;
+
+
+select city_name_arrival 
+
+ 
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where  Ticket.id_Flight> any(select id
+ from Ticket 
+ where   Cash>5000 ) ;
+------------------------------------------------------------------------
+//вывести запросы по количеству рейсов в города, объеденное в одну табл
+use Airport;
+
+
+select  count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Санкт-Петербург'
+ union
+ select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Новосибирск'
+  union
+  select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Алма-ата'
+  union
+  select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Казань'
+  union
+  select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Волгоград'
+  union
+  select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Томск';
+-------------------------------------------------------
+//вывести запросы по количеству рейсов в города, объеденное в одну табл плюс добавление столбца собозначением города 
+
+use Airport;
+
+
+select 'Питер'as'города',  count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Санкт-Петербург'
+ union all
+ select 'Новосибирск', count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Новосибирск'
+  union all
+  select 'Алма-ата', count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Алма-ата'
+  union all
+  select 'Казань', count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Казань'
+  union all
+  select 'Волгоград', count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Волгоград'
+  union all
+  select 'Томск', count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Томск';
+-----------------------------------------------------
+//вывести запросы по количеству рейсов в города, объеденное в одну табл плюс добавление столбца собозначением города  и по количеству кэша по условию
+use Airport;
+
+
+select city_name_arrival 
+
+ 
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight;
+
+
+select 'Питер'as'города',  count (*) as[count]
+
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where Flight.city_name_arrival='Санкт-Петербург' and Cash >=3000
+ union all
+ select 'Новосибирск', count (*) as[count]
+
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where Flight.city_name_arrival='Новосибирск'and Cash >=4000
+  union all
+  select 'Алма-ата', count (*) as[count]
+
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where Flight.city_name_arrival='Алма-ата'and Cash >=5000
+  union all
+  select 'Казань', count (*) as[count]
+
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where Flight.city_name_arrival='Казань' and Cash >=3000
+  union all
+  select 'Волгоград', count (*) as[count]
+
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where Flight.city_name_arrival='Волгоград' and Cash >=6000
+  union all
+  select 'Томск', count (*) as[count]
+
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where Flight.city_name_arrival='Томск' and Cash >=3000;
+----------------------------------------------------------------------------------------
+//вывод город назначений по стоимости билетов и вывод сгрупированных городов с суммой стоимости билетов 
+ use Airport;
+
+ select city_name_arrival , Cash
+ 
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight;
+
+
+
+
+select city_name_arrival , sum(cash)
+ 
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ group by city_name_arrival;
+----------------------------------------------------------------------
+
+//внешнее связание таблиц и вывод имена пассажиров и стоимость их билетов
+ use Airport;
+
+ select name , Cash
+ 
+from Passengers Full  join Ticket on Passengers.id=Ticket.id;
+
+
+
+
+
+
+
+
+
+

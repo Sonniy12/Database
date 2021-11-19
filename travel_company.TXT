@@ -1,0 +1,149 @@
+create database travel_company;
+---------------------------------
+Use travel_company;
+create table trip
+(id int not null identity(1,1) primary key,
+name nvarchar(30),
+departure date default null
+
+);
+--------------------------------------//один к одному
+Use travel_company;
+create table customers
+(id int not null identity(1,1) primary key,
+name nvarchar(30) not null,
+l_name nvarchar(30)not null,
+
+Foreign key(id) references trip(id)
+
+
+
+);
+----------------------------------------
+Use travel_company;
+
+insert into customers
+values 
+('Василий','Смернов'),
+('Анна','Рытикова'),
+('Елена','Черныш'),
+('Кирилл','Дудиков'),
+('Пётр','Миронов'),
+('Светлана','Иванова'),
+('Евгений','Захаров'),
+('Лиля','Воронцова');
+
+----------------------------------------
+Use travel_company;
+
+insert into trip
+values 
+('Бали','12-11-2020'),
+('Кипр','20-12-2020'),
+('Дубай','15-11-2020'),
+('Краби','24-12-2020'),
+('Анталия','27-11-2020'),
+('Стамбул','15-12-2020'),
+('ГОА','30-11-2020'),
+('Мауи','05-01-2021');
+-------------------------------
+use travel_company;
+select*
+from trip;
+
+use travel_company;
+select*
+from  customers;
+----------------------------------
+
+
+
+
+Use travel_company;
+create table travel_agent
+(id int not null, 
+name nvarchar(30) not null,
+l_name nvarchar(30)not null,
+primary key(l_name)
+
+
+
+
+
+);
+-------------------------------------
+Use travel_company;
+
+insert into travel_agent
+values 
+(1,'Ирина','Вавина'),
+(2,'Сергей','Капылов'),
+(3,'Олег','Трушков'),
+(4,'Юлия','Быкова');
+----------------------------------//один ко многим
+
+
+Use travel_company;
+create table client_base
+(id int not null identity(1,1),
+fk nvarchar(30) ,
+id_trip int,
+id_client int,
+primary key(id),
+Foreign key(fk) references travel_agent(l_name),
+foreign key(id_trip)references trip(id),
+foreign key(id_client)references customers(id)
+
+
+);
+----------------------------------------много ко многим
+Use travel_company;
+create table Creat_table_baseClient
+(
+
+id int not null identity(1,1),
+
+id_trip_new int,
+id_client_new int,
+Primary key(id),
+foreign key(id_trip_new)references trip(id),
+foreign key(id_client_new)references customers(id)
+
+);
+
+-------------------------------------
+//конфликтуют у меня id в табл.trip и customers
+//пришлось так прописать,может у вас  не будут конфликтовать
+Use travel_company;
+
+insert into client_base
+values 
+('Вавина',1,2),
+('Капылов',2,3),
+('Трушков',3,4),
+('Быкова',4,5),
+('Капылов',5,6),
+('Трушков',6,7),
+('Вавина',7,8),
+('Вавина',8,9);
+
+
+select*
+from client_base;
+----------------------------------------
+Use travel_company;
+
+insert into Creat_table_baseClient
+values 
+(1,2),
+(2,3),
+(3,4),
+(4,5),
+(5,6),
+(6,7),
+(7,8),
+(8,9);
+
+
+select*
+from Creat_table_baseClient;

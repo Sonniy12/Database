@@ -1,0 +1,545 @@
+
+
+
+
+
+create database Airport;
+-----------------------------
+
+use Airport;
+create table Passengers
+(
+id int not null identity(1,1) primary key,
+name nvarchar(30) not null,
+l_name nvarchar(30)not null,
+
+);
+-----------------------------
+
+
+use Airport;
+create table Business_class_ticket
+(
+id int not null identity(1,1) primary key,
+id_Business_class_client int,
+Foreign key(id_Business_class_client) references Passengers(id)
+
+
+);
+---------------------------------
+
+
+
+
+use Airport;
+create table Economy_class_ticket
+(
+id int not null identity(1,1) primary key,
+id_Economy_class_client int,
+Foreign key(id_Economy_class_client) references Passengers(id)
+
+);
+----------------------------------------
+
+
+use Airport;
+
+
+insert into Passengers
+values 
+('Алена','Иванова'),
+('Алексей','Шишкин'),
+('Михаил','Петров'),
+('Валентина','Цаплина'),
+('Иван','Носов'),
+('Борис','Зубов'),
+('Елена','Евсеева'),
+('Максим','Иваненко'),
+('Ян','Симонов'),
+('Дарья','Тихонова'),
+('Василий','Рыбков'),
+('Светлана','Максимова'),
+('Ирина','Чебухина'),
+('Андрей','Слепаков');
+
+
+select*
+from  Passengers;
+--------------------------------
+
+
+use Airport;
+
+
+insert into Business_class_ticket
+values 
+(1),
+(2),
+(4),
+(7),
+(10),
+(14);
+
+
+select*
+from  Business_class_ticket;
+--------------------------------------
+use Airport;
+
+
+insert into Economy_class_ticket
+values 
+(3),
+(5),
+(6),
+(8),
+(9),
+(11),
+(12),
+(13);
+
+
+select*
+from  Economy_class_ticket;
+--------------------------------------
+use Airport;
+create table Flight
+(
+id int not null identity(1,1) primary key,
+city_name_departure nvarchar(200) not null,
+city_name_arrival nvarchar(200) not null,
+airport_name_departure nvarchar(200) not null,
+ airport_name_arrival nvarchar(200) not null,
+ Date_flight date not null,
+ Time_flight time not null,
+ travel_time float
+
+
+);
+--------------------------------------
+
+use Airport;
+
+
+insert into Flight
+values 
+('Москва','Новосибирск','Шереметьево','Толмачево','2020-11-30','18:30:00',2.5),
+('Москва','Санкт-Петербург','Шереметьево','Пулково','2020-11-29','21:10:00',1),
+('Москва','Волгоград','Шереметьево','Гумрак','2020-12-02','08:00:00',3),
+('Новосибирск','Алма-ата','Толмачево','Алматы','2020-12-15','07:40:00',4),
+('Москва','Казань','Домодедово','Казан','2020-12-05','09:00:00',4),
+('Новосибирск','Томск','Толмачево','Богашёво','2020-12-11','11:20:00',1.5),
+('Новосибирск','Санкт-Петербург','Толмачево','Пулково','2020-12-10','06:00:00',3),
+('Москва','Алма-ата','Шереметьево','Алматы','2020-11-30','09:30:00',5),
+
+('Новосибирск','Санкт-Петербург','Толмачево','Пулково','2020-12-02','20:30:00',3);
+
+
+select*
+from  Flight;
+
+----------------------------------------
+use Airport;
+create table Ticket
+(
+id int not null identity(1,1) primary key,
+id_Flight int,
+id_Business_class int,
+id_Economy_class int,
+Cash money,
+Foreign key(id_Flight) references Flight(id),
+Foreign key(id_Business_class) references Business_class_ticket(id),
+Foreign key(id_Economy_class) references Economy_class_ticket(id)
+
+
+);
+-----------------------------------------
+use Airport;
+
+
+insert into Ticket
+values 
+(1,1,null,6000),
+(1,null,6,4000),
+(2,null,3,3000),
+(2,4,null,5000),
+(3,null,5,4000),
+(4,2,null,6000),
+(5,null,8,5000),
+(5,3,null,7000),
+(6,5,1,10000),
+(7,null,4,4000),
+(8,6,7,12000),
+(9,null,2,5000);
+
+
+select*
+from Ticket
+-------------------------------------------
+
+1
+use Airport;
+
+
+select city_name_arrival ,
+airport_name_departure,
+ airport_name_arrival ,
+ Date_flight ,
+ Time_flight 
+from Flight
+
+ where Flight.city_name_arrival ='Санкт-Петербург'
+  order by Time_flight;
+
+----------------------------------------------
+2
+ use Airport;
+
+
+select city_name_departure,city_name_arrival ,
+airport_name_departure,
+ airport_name_arrival ,
+ Date_flight ,
+ Time_flight,
+  travel_time
+from Flight
+
+ where Flight.travel_time=(select max(travel_time)from Flight);
+
+
+---------------------------------------------
+3
+use Airport;
+
+
+select city_name_departure,city_name_arrival ,
+airport_name_departure,
+ airport_name_arrival ,
+ Date_flight ,
+ Time_flight,
+  travel_time
+from Flight
+
+ where Flight.travel_time>2 ;
+
+-------------------------------------------------
+4
+use Airport;
+
+
+select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Санкт-Петербург';
+ select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Новосибирск';
+  select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Алма-ата';
+  select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Казань';
+  select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Волгоград';
+  select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Томск';
+
+------------------------------------------------
+5
+ use Airport;
+
+select city_name_arrival
+from Flight
+where Flight.id=(
+
+
+select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival IN('Санкт-Петербург','Новосибирск','Алма-ата','Казань','Волгоград','Томск'));
+---------------------------------------------
+7//у меня все бизн.класс. занят,потому выводит пустую строку,если поставить =1, выведит запись
+
+ use Airport;
+
+
+select city_name_departure,city_name_arrival ,
+airport_name_departure,
+ airport_name_arrival ,
+ Date_flight ,
+ Time_flight
+ 
+from Flight 
+
+ where  Date_flight='2020-11-30'(select city_name_departure,city_name_arrival ,
+airport_name_departure,
+ airport_name_arrival ,
+ Date_flight ,
+ Time_flight
+ from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+ where Ticket.id_Business_class<1 and Date_flight='2020-11-30') ;
+-----------------------------------------------------
+8 
+use Airport;
+select 
+ count(*) as[count]
+ 
+from Flight 
+
+ where  Date_flight='2020-12-02'(select sum(Ticket.cash)
+ from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+ where Date_flight='2020-12-02' ) ;
+--------------------------------------------
+9
+ use Airport;
+
+select city_name_departure,city_name_arrival ,
+airport_name_departure,
+ airport_name_arrival ,
+ Date_flight ,
+ Time_flight
+ 
+ 
+ 
+from Flight 
+
+ where  Date_flight='2020-12-11'(select count(*) as[count]
+ from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+ where Date_flight='2020-12-11' ) ;
+---------------------------------------------
+10
+ use Airport;
+
+select id,city_name_arrival as[Шереметьево] 
+ 
+from Flight 
+
+ where  airport_name_departure='Шереметьево';
+
+---------------------------------------------
+//запросы другие варианты
+
+// вернуть труе где каш больше 3000
+ use Airport;
+
+
+select city_name_departure,city_name_arrival ,
+airport_name_departure,
+ airport_name_arrival ,
+ Date_flight ,
+ Time_flight 
+ 
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where  Exists(select*
+ from Ticket 
+ where Flight.id=Ticket.id_Flight and  Cash>3000 ) ;
+-------------------------------------------------------
+
+//вывести рейсы где билеты больше 5000
+ use Airport;
+
+
+select city_name_departure,city_name_arrival ,
+airport_name_departure,
+ airport_name_arrival ,
+ Date_flight ,
+ Time_flight 
+ 
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where  Ticket.id_Flight= any(select id
+ from Ticket 
+ where   Cash>5000 ) ;
+-------------------------------------------------------
+//вывести города назначения где внешний ключ больше айди из таблицы Тикет, где билет стоит больше 5000
+
+ use Airport;
+
+
+select city_name_arrival 
+
+ 
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where  Ticket.id_Flight> any(select id
+ from Ticket 
+ where   Cash>5000 ) ;
+------------------------------------------------------------------------
+//вывести запросы по количеству рейсов в города, объеденное в одну табл
+use Airport;
+
+
+select  count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Санкт-Петербург'
+ union
+ select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Новосибирск'
+  union
+  select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Алма-ата'
+  union
+  select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Казань'
+  union
+  select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Волгоград'
+  union
+  select count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Томск';
+-------------------------------------------------------
+//вывести запросы по количеству рейсов в города, объеденное в одну табл плюс добавление столбца собозначением города 
+
+use Airport;
+
+
+select 'Питер'as'города',  count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Санкт-Петербург'
+ union all
+ select 'Новосибирск', count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Новосибирск'
+  union all
+  select 'Алма-ата', count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Алма-ата'
+  union all
+  select 'Казань', count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Казань'
+  union all
+  select 'Волгоград', count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Волгоград'
+  union all
+  select 'Томск', count (*) as[count]
+
+from Flight
+
+ where Flight.city_name_arrival='Томск';
+-----------------------------------------------------
+//вывести запросы по количеству рейсов в города, объеденное в одну табл плюс добавление столбца с обозначением города  и по количеству кэша по условию
+use Airport;
+
+
+select city_name_arrival 
+
+ 
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight;
+
+
+select 'Питер'as'города',  count (*) as[count]
+
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where Flight.city_name_arrival='Санкт-Петербург' and Cash >=3000
+ union all
+ select 'Новосибирск', count (*) as[count]
+
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where Flight.city_name_arrival='Новосибирск'and Cash >=4000
+  union all
+  select 'Алма-ата', count (*) as[count]
+
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where Flight.city_name_arrival='Алма-ата'and Cash >=5000
+  union all
+  select 'Казань', count (*) as[count]
+
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where Flight.city_name_arrival='Казань' and Cash >=3000
+  union all
+  select 'Волгоград', count (*) as[count]
+
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where Flight.city_name_arrival='Волгоград' and Cash >=6000
+  union all
+  select 'Томск', count (*) as[count]
+
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ where Flight.city_name_arrival='Томск' and Cash >=3000;
+----------------------------------------------------------------------------------------
+//вывод город назначений по стоимости билетов и вывод сгрупированных городов с суммой стоимости билетов 
+ use Airport;
+
+ select city_name_arrival , Cash
+ 
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight;
+
+
+
+
+select city_name_arrival , sum(cash)
+ 
+from Flight inner join Ticket on Flight.id=Ticket.id_Flight
+
+ group by city_name_arrival;
+----------------------------------------------------------------------
+
+//внешнее связание таблиц и вывод имена пассажиров и стоимость их билетов
+ use Airport;
+
+ select name , Cash
+ 
+from Passengers Full  join Ticket on Passengers.id=Ticket.id;
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,146 @@
+create database Salary;
+---------------------------
+use Salary;
+create table Cash
+(
+
+id int not null identity(1,1) Primary key(id),
+cash money null
+
+);
+----------------------------------------
+use Salary;
+
+create table name_worker
+(
+
+id int not null identity(1,1) Primary key(id),
+names nvarchar(30) not null,
+fk int  null,
+foreign key(fk)references Cash(id)
+
+
+
+);
+-----------------------------------------
+use Salary;
+
+insert into Cash
+values
+(10000),
+(25000),
+(30000),
+(35500),
+(45350),
+(51623);
+
+insert into name_worker
+values
+('Вася',2),
+('Петя',2),
+('Саша',4),
+('Катя',3),
+('Миша',5),
+('Глаша',6),
+('Дуся',5),
+('Валера',6),
+('Максим',1),
+('Ибрагим',4);
+---------------------------------------
+use Salary;
+
+select names, cash
+from Cash inner join name_worker on Cash.id=name_worker.fk
+where cash>(
+select cash
+from Cash inner join  name_worker on Cash.id=name_worker.fk
+where name_worker.names='Саша'
+);
+--------------------------------------
+use Salary;
+
+select names, cash
+from Cash inner join name_worker on Cash.id=name_worker.fk
+where cash<(
+select cash
+from Cash inner join  name_worker on Cash.id=name_worker.fk
+where name_worker.names='Дуся'
+);
+
+use Salary;
+select names, cash
+from Cash inner join  name_worker  on Cash.id=name_worker.fk;
+----------------------------------------------
+use Salary;
+
+select names, cash
+from Cash inner join name_worker on Cash.id=name_worker.fk
+where cash=(
+select  Max (cash)
+from Cash inner join  name_worker on Cash.id=name_worker.fk
+
+);
+
+use Salary;
+select names, cash
+from Cash inner join  name_worker  on Cash.id=name_worker.fk;
+------------------------------------------------
+use Salary;
+
+select names, cash
+from Cash inner join name_worker on Cash.id=name_worker.fk
+where cash=(
+select  Min (cash)
+from Cash inner join  name_worker on Cash.id=name_worker.fk
+
+);
+
+use Salary;
+select names, cash
+from Cash inner join  name_worker  on Cash.id=name_worker.fk;
+-----------------------------------------------------
+use Salary;
+
+select names, cash
+from Cash inner join name_worker on Cash.id=name_worker.fk
+where names Like'В%'(
+select  cash,names
+from Cash inner join  name_worker on Cash.id=name_worker.fk
+where names Like'В%'
+);
+
+----------------------------------------------------
+
+use Salary;
+
+select names, cash
+from Cash inner join name_worker on Cash.id=name_worker.fk
+where names  Like '%а'(
+select  cash,names
+from Cash inner join  name_worker on Cash.id=name_worker.fk
+where names  Like '%м'
+);
+
+select names, cash
+from Cash inner join name_worker on Cash.id=name_worker.fk;
+-------------------------------------------
+
+use Salary;
+
+select names, cash
+from Cash as C,name_worker as n
+where C.id=n.fk and cash>0
+(select names, cash, cash*12 as[Зарплата за 12 месяцев]
+from Cash inner join name_worker on Cash.id=name_worker.fk
+
+
+);
+
+/*Глупый получился подзапрос последний, но не смогла больше придумать*/
+
+
+
+
+
+
+
